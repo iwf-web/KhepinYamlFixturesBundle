@@ -3,6 +3,7 @@
 namespace Khepin\YamlFixturesBundle\Fixture;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use JMS\Serializer\SerializerInterface;
 
 abstract class AbstractFixture
 {
@@ -13,6 +14,9 @@ abstract class AbstractFixture
     protected $loader;
 
     protected $manager;
+
+    /** @var  SerializerInterface $serializer */
+    protected $serializer;
 
     public function __construct(array $data, $loader)
     {
@@ -99,6 +103,16 @@ abstract class AbstractFixture
         }
 
         return true;
+    }
+
+    /**
+     * @param SerializerInterface $serializer
+     * @return AbstractFixture
+     */
+    public function setSerializer($serializer)
+    {
+        $this->serializer = $serializer;
+        return $this;
     }
 
     /**

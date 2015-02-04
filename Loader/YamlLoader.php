@@ -111,8 +111,13 @@ class YamlLoader
             $persister = $this->getPersister($persistence);
             $manager = $persister->getManagerForClass($fixture_data['model']);
 
+            if (null === $manager) {
+                $manager = $persister->getManager();
+            }
+
             $fixture = $this->getFixtureClass($persistence);
             $fixture = new $fixture($fixture_data, $this, $file);
+            $fixture->setSerializer($this->getService('serializer'));
             $fixture->load($manager, func_get_args());
         }
 
@@ -169,6 +174,7 @@ class YamlLoader
         $managers = array(
             'orm'       => 'doctrine',
             'mongodb'   => 'doctrine_mongodb',
+            'command'   => 'doctrine'
         );
 
         return $this->kernel->getContainer()->get($managers[$persistence]);
@@ -181,7 +187,8 @@ class YamlLoader
     {
         $classes = array(
             'orm'       => 'Khepin\YamlFixturesBundle\Fixture\OrmYamlFixture',
-            'mongodb'   => 'Khepin\YamlFixturesBundle\Fixture\MongoYamlFixture'
+            'mongodb'   => 'Khepin\YamlFixturesBundle\Fixture\MongoYamlFixture',
+            'command'   => 'Khepin\YamlFixturesBundle\Fixture\CommandHandlerFixture'
         );
 
         return $classes[$persistence];
